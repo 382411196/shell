@@ -1,0 +1,32 @@
+
+将mysql默认的datadir目录"/var/lib/mysql"改为 "/home/mysql_data"
+1、关掉数据库
+
+sudo /etc/init.d/mysql stop
+2、因为我们指定的数据库文件目录为/home/mysql_data
+
+cd /home                     //打开home
+mkdir mysql_data             //创建目录
+chown mysql:mysql mysql_data       //并修改其拥有者及所属群组为mysql:mysql.命令
+//修改mysql配置文件my.cnf：
+将 datadir=/var/lib/mysql 改为 datadir=/home/mysql_data
+3、修改ubuntu中的安全设置
+
+sudo gedit /etc/apparmor.d/usr.sbin.mysqld 
+在这个文件里面加入权限设定，将原来的
+/var/lib/mysql/ r,
+/var/lib/mysql/** rwk,
+更换成(或直接添加)
+/home/mysql_data/mysql/ r,
+/home/mysql_data/mysql/** rwk,
+4、重新初始化数据文件：执行 /etc/init.d/apparmor restart
+
+sudo mysql_install_data
+5、启动mysql数据库服务(或重启服务器)：
+
+sudo /etc/init.d/mysql start
+这个方法中最值得一提是修改/etc/apparmor.d/usr.sbin.mysqld这个文件，改变应用程序的权限。这种配置权限方式让我这个小白对linux权限的理解又深刻了不少。
+
+文／linfree（简书作者）
+原文链接：http://www.jianshu.com/p/5fb55e313f8c
+著作权归作者所有，转载请联系作者获得授权，并标注“简书作者”。
