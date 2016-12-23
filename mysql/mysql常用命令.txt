@@ -1,3 +1,6 @@
 使用SSD的情况下需要调整 innodb-io-capacity 大概2000
 
+添加自动备份脚本 mysqlbak.sh
+添加监测MySQL宕机脚本 mysqlautostart.sh
+
 
