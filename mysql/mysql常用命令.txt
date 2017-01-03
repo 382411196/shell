@@ -3,4 +3,3 @@
 添加自动备份脚本 mysqlbak.sh
 添加监测MySQL宕机脚本 mysqlautostart.sh
 
-

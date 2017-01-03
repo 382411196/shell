@@ -1,0 +1,42 @@
+主节点操作
+my.cnf配置文件进行相应的修改
+server-id=1
+
+log_bin=/var/log/mysql/mysql-bin.log
+
+binlog_do_db=test   //要进行主从复制的数据库
+
+binlog_ignore_db=information_schema //不需要进行主从复制的数据库
+
+重启mysql
+进入mysql
+
+//主节点授权
+grant replication slave on *.* to 'rep2'@'xx.9.86.249' identified by 'rep2';   //允许这个IP的这个账号访问  注意my.cnf修改监听IP
+flush tables with read lock;  //锁表   //
+show master status;   //记录当前的状态file和pos
+
+mysqldump 备份老的数据   //如有需要同步的老的数据
+//
+
+
+从节点操作
+my.cnf配置文件进行相应的修改
+server-id=2   //ID只要不和主节点一样就行
+replicate-do-db=test #只复制ym_test数据库
+
+
+配置好后重启mysql
+
+进入mysql
+
+stop slave;
+
+change master to master_host='xx.9.86.250',master_user='rep2',master_password='rep2',master_log_file='log.000011',master_log_pos=107;  //最后2个参数与主库 show master status; 中一样
+
+start slave;
+
+show slave status\G  //如果出现： Slave_IO_Running: Yes Slave_SQL_Running: Yes   以上两项都为Yes，那说明没问题了。
+
+
+//需要把主库mysqldump备份老的数据导入到从库
